@@ -25,12 +25,37 @@ async function run() {
 	try {
 		await client.connect();
 
+		// collection
+		const taskCollection = client.db('task-manager-app').collection('tasks');
+
+		// add new task
+		app.post('/new-task', async (req, res) => {
+			const newTask = req.body;
+			console.log(newTask);
+			const result = await taskCollection.insertOne(newTask);
+			res.send(result);
+		});
+
+		// get all tasks
+		app.get('/all-tasks', async (req, res) => {
+			const result = await taskCollection.find().toArray();
+			res.send(result);
+		});
+
+		// get tasks by category
+		app.get('/tasks', async (req, res) => {
+			const filter = req.query.filter;
+			const query = { status: filter };
+			const result = await taskCollection.find(query).toArray();
+			res.send(result);
+		});
+
 		await client.db('admin').command({ ping: 1 });
 		console.log(
 			'Pinged your deployment. You successfully connected to MongoDB!'
 		);
 	} finally {
-		await client.close();
+		// await client.close();
 	}
 }
 run().catch(console.dir);
