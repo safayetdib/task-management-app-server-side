@@ -23,7 +23,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
 	try {
-		await client.connect();
+		// await client.connect();
 
 		// collection
 		const taskCollection = client.db('task-manager-app').collection('tasks');
